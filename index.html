@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor</title>
+</head>
+<body>
+  <canvas id=myCanvas></canvas>
+
+  <script>
+    const myCanvas = document.querySelector('#myCanvas');
+    const ctx = myCanvas.getContext('2d');
+    const lastCoords = {};
+
+    document.addEventListener('touchstart', e => {
+      for (const touch of e.changedTouches) {
+        lastCoords[touch.identifier] = { x: touch.pageX, y : touch.pageY}
+      }
+    })
+    document.addEventListener('touchmove', e => {
+        for (const touch of e.changedTouches) {
+          ctx.beginPath();
+          ctx.moveTo(lastCoords[touch.identifier].x, lastCoords[touch.identifier].y);
+          ctx.lineTo(touch.pageX, touch.pageY);
+          ctx.strokeStyle = "#000";
+          ctx.stroke();
+          lastCoords[touch.identifier] = { x: touch.pageX, y: touch.pageY }
+        }
+      })
+    document.addEventListener('touchend',  touchCancel);
+    document.addEventListener('touchcancel', touchCancel);
+
+    window.addEventListener('load', () => {
+      myCanvas.width = window.innerWidth;
+      myCanvas.height = window.innerHeight;
+    })
+
+    function touchCancel(e) {
+        for (const touch of e.changedTouches) {
+          delete lastCoords[touch.identifier];
+        }
+      }
+
+  </script>
+  
+</body>
+</html>
